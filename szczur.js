@@ -86,3 +86,6 @@ useEffect(() => {
       getEmployess();
     });
   }
+// {nazwisko: {regex:/^B/i}}  //odpowiednik sql like B%
+ // {nazwisko: {regex:/B$/i}} //odpowiednik sql like %B
+//$expr:{ $gte: [ { $strLenCP: "$nazwisko" }, 5 ] } }  // to chodzi o to że możemy pole z bazy potraktować jako zmienna
