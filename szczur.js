@@ -89,3 +89,25 @@ useEffect(() => {
 // {nazwisko: {regex:/^B/i}}  //odpowiednik sql like B%
  // {nazwisko: {regex:/B$/i}} //odpowiednik sql like %B
 //$expr:{ $gte: [ { $strLenCP: "$nazwisko" }, 5 ] } }  // to chodzi o to że możemy pole z bazy potraktować jako zmienna
+  const wynik = await Praconwik.aggregate([
+    {
+      $group: {
+        _id: "$department",
+        sumapensji: { $sum: "$salary" },
+      },
+    },
+    {
+      $match: {
+        sumapensji: { $gt: 10000 },
+      },
+    },
+    {
+      $sort: { sumapensji: -1 },
+    },
+    {
+      $project: {
+        _id: 0,
+        sumapensji: 1, // to jest po to aby tylko zwracać sume pesnji i id czyli nie wszystkie dane bo tak jest kurde łatwiej i nara xd
+      },
+    },
+  ]);
