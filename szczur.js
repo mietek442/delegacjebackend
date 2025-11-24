@@ -80,3 +80,9 @@ useEffect(() => {
     });
     console.log("Wysłano rower: ", datatosend.name, " ", datatosend.price);
   };
+  function addEmployee() {
+    const data = { name, surname, salary, department };
+    axios.post("http://localhost:3000/add_employ", data).then((res) => {
+      getEmployess();
+    });
+  }
