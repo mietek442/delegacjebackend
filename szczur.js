@@ -61,3 +61,22 @@ export const CreateRower = async(req,res)=>{
     const newRowerRecord = await Rower.create({id:2,name:"menel",price:200})
     res.json("sucess");
 }
+
+useEffect(() => {
+    axios
+      .get("http://localhost:8080/rowery/rower")
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
+  const AddBike = () => {
+    fetch("http://localhost:8080/rowery/dodajrower", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(datatosend),
+    });
+    console.log("Wysłano rower: ", datatosend.name, " ", datatosend.price);
+  };
