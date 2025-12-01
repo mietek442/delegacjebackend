@@ -116,3 +116,115 @@ useEffect(() => {
       },
     },
   ]);
+
+
+    // dodatkowe 
+
+const express = require("express");
+const router = express.Router();
+
+const mongoose = require("mongoose");
+const Wydarzenie = require("./models/wydarzeniamodel.js");
+const addWydarzenie = async (req, res) => {
+  console.log("Dane otrzymane z frontendu:", req.body);
+
+  const projekt = {
+    nazwa: req.body.nazwa,
+    status: req.body.status,
+    priorytet: req.body.priorytet,
+    terminrealizacji: req.body.terminrealizacji,
+    postep: req.body.postep,
+  };
+  try {
+    const newProjektrecord = await Wydarzenie.create(projekt);
+    console.log("Wydarzenie dodane:", newProjektrecord);
+    res.status(201).json({ message: "sucess" });
+  } catch (err) {
+    res.status(500).json({ message: "error" });
+  }
+};
+
+const getWydarzenia = async (req, res) => {
+  try {
+    const wydarzenia = await Wydarzenie.find();
+
+    res.json({ data: wydarzenia });
+  } catch (err) {
+    console.log("Error fetching wydarzenia:", err);
+    res.status(500).json({ message: "error" });
+  }
+};
+testFunctionGetByParametr = async (req, res) => {
+  try {
+    console.log(req.params.parametr);
+    const wydarzenia = await Wydarzenie.find({
+      priorytet: req.params.parametr,
+    });
+
+    // pensja >=8000
+    // {pensja:{$gte:8000}}
+    // pensja >8000
+    // {pensja:{$gt:8000}}
+
+    // wysietlamy tylko imie i nazwisko pracownika gdy pesnja wieksza od 1000
+    // {pensja:{$gte:8000}},{ imie: 1, nazwisko: 1 }
+
+    // nazwisko na daną literę b:
+    // {nazwisko: {regex:/^B/i}}  //odpowiednik sql like B%
+
+    // nazwisko kończy się na daną literę b:
+    // {nazwisko: {regex:/B$/i}} //odpowiednik sql like %B
+
+    //5 nazwikso >= 5 znaków
+    // $expr:{ $gte: [ { $strLenCP: "$nazwisko" }, 5 ] } }  // to chodzi o to że możemy pole z bazy potraktować jako zmienna
+    //res.json({ data: wydarzenia });
+
+    // $or:[{wydział:"Logistyka"},{wydział:"HR"}}]
+
+    //7 pensja od 9000 do 12000zł włacznie
+    //przedział:
+    // {pensja:{$gte:9000,$lte:12000}}}
+
+    //8 wszyscy pracownicy proza działem hr:
+    //wydział:{$ne:"HR"}
+
+    //9
+    //pensja >9500, wydział inny niz logistyaka nazwisko konczy się na c
+
+    // pensja:$and:[{gte:9500},{wydział:{$ne:"Logistyka"},{nazwisko: {regex:/^c/i}} }]
+
+    //10
+    //pensja >9000 lub wydiał "hr" i wydział różny od finanse
+
+    //$and:[{$or:[pensja:{$gt:9000}},{wydzial:"HR"},{$ne:{imie:"Olaf"}}]}];
+
+    //================================================
+    // Agregowanie i Grupowanie danych:
+    //================================================
+    // avg(), sum(), count(), groupby ->SQL
+  } catch (err) {
+    console.log("Error fetching wydarzenia:", err);
+    res.status(500).json({ message: "error" });
+  }
+};
+
+const getwydarzeniebyId = async (req, res) => {
+  try {
+    console.log(req.params.parametr);
+    const wydarzenia = await Wydarzenie.find({
+      priorytet: req.params.parametr,
+    });
+
+    res.json({ data: wydarzenia });
+  } catch (err) {
+    console.log("Error fetching wydarzenia:", err);
+    res.status(500).json({ message: "error" });
+  }
+};
+
+router.post("/dodajwydarzenia", addWydarzenie);
+
+router.get("/wydarzenia", getWydarzenia);
+router.get("/wydarzenia/:parametr", getwydarzeniebyId);
+router.get("/wydarzenia/test/:parametr", testFunctionGetByParametr);
+module.exports = router;
